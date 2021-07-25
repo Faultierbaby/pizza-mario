@@ -1,0 +1,214 @@
+-- Initialisierung der Datenbank >>PIZZA MARIO<<
+
+
+-- T A B E L L E N / R E L A T I O N E N
+--------------------------------------------
+
+-- Grundlegende Tabellen des Datenbankschemas: Zulieferer, Zutat, Pizza
+
+CREATE TABLE zulieferer(
+    name TEXT NOT NULL UNIQUE PRIMARY KEY,
+    adresse TEXT,
+    status BOOL DEFAULT FALSE 
+);
+
+CREATE TABLE zutat(
+    nummer INTEGER NOT NULL UNIQUE PRIMARY KEY,
+    name TEXT,
+    herkunft TEXT,
+    preis FLOAT,
+    zuliefererName TEXT REFERENCES zulieferer ON DELETE NO ACTION,
+    status BOOL DEFAULT FALSE 
+);
+
+CREATE TABLE pizza(
+    nummer INTEGER NOT NULL UNIQUE PRIMARY KEY,
+    groesse VARCHAR(6), --klein, normal, gross = 6 Zeichen lang
+    name TEXT,
+);
+
+
+-- Beziehungsbeschreibungen (vgl. UML-Diagramm / Relationales Schema): Bestellung, Vorrat, Belag (= pizza_zutatnummer):
+
+CREATE TABLE bestellung(
+    nummer INTEGER NOT NULL UNIQUE PRIMARY KEY, 
+    pizzaNummer INTEGER REFERENCES pizza,
+    kundenmail TEXT NOT NULL
+);
+
+CREATE TABLE vorrat(
+    zutatNummer INTEGER REFERENCES zutat ON DELETE NO ACTION,
+    menge INTEGER DEFAULT 0
+);
+
+CREATE TABLE pizza_zutatnummer(
+    pizzaNummer INTEGER REFERENCES pizza,
+    zutatNummer INTEGER REFERENCES zutat
+);
+
+
+-- Testdatensaetze:
+
+INSERT INTO zulieferer VALUES('Toad','Am Pilzplatz 15');
+INSERT INTO zulieferer VALUES('Peach','Schlossplatz 1');
+INSERT INTO zulieferer VALUES('Bowser','Bowsers Festung');
+INSERT INTO zulieferer VALUES('Kamek','Bowsers Festung');
+INSERT INTO zulieferer VALUES('Nintendo','Game Boy Road 1');
+INSERT INTO zulieferer VALUES('Yoshi','Yoshis Haus');
+
+INSERT INTO zutat VALUES('1','Mini-Pilz','Pilz-Koenigreich','5','Toad');
+INSERT INTO zutat VALUES('2','Mega-Pilz','Pilz-Koenigreich','6','Toad');
+INSERT INTO zutat VALUES('3','1-Up-Pilz','Pilz-Koenigreich','7','Toad');
+INSERT INTO zutat VALUES('4','Doppelkirsche','Pilz-Koenigreich','5','Toad');
+INSERT INTO zutat VALUES('5','Doppelkirsche','Pilz-Palast','6','Peach');
+INSERT INTO zutat VALUES('6','Doppelkirsche','Dunkelland','10','Bowser');
+INSERT INTO zutat VALUES('7','Frucht','Pilz-Koenigreich','7','Toad');
+INSERT INTO zutat VALUES('8','Frucht','Pilz-Palast','6','Peach');
+INSERT INTO zutat VALUES('9','Frucht','Yoshis Eiland','8','Yoshi');
+INSERT INTO zutat VALUES('10','Maxi-Tomate','Pilz-Koenigreich','7','Toad');
+INSERT INTO zutat VALUES('11','Maxi-Tomate','Pilz-Palast','6','Peach');
+INSERT INTO zutat VALUES('12','Maxi-Tomate','Dunkelland','10','Kamek');
+INSERT INTO zutat VALUES('13','Bananen','Dunkelland','5','Kamek');
+INSERT INTO zutat VALUES('14','Bananen','Peach-Schloss','8','Peach');
+INSERT INTO zutat VALUES('15','Bananen','Japan','1','Nintendo');
+INSERT INTO zutat VALUES('16','Mini-Gumbas','Dunkelland','5','Kamek');
+INSERT INTO zutat VALUES('17','Mini-Gumbas','Pilz-Koenigreich','10','Toad');
+INSERT INTO zutat VALUES('18','Mini-Gumbas','Japan','12','Nintendo');
+INSERT INTO zutat VALUES('19','Maxi-Gumbas','Dunkelland','6','Bowser');
+INSERT INTO zutat VALUES('20','Maxi-Gumbas','Dunkelland','7','Kamek');
+INSERT INTO zutat VALUES('21','Yoshi-Kekse','Yoshis Eiland','5','Yoshi');
+INSERT INTO zutat VALUES('22','Pfirsich','Pilz-Palast','5','Peach');
+INSERT INTO zutat VALUES('23','Tomatensauce','Japan','1','Nintendo');
+INSERT INTO zutat VALUES('24','Kaese','Japan','1','Nintendo');
+INSERT INTO zutat VALUES('25','Oregano','Japan','1','Nintendo');
+
+-- Weitere Datengenerierung durch Testen des Front-Ends (pizza, bestellung)
+
+
+-- F U N K T I O N E N / T R I G G E R S
+--------------------------------------------
+
+-- Bei Erstellung einer neuen Zutat sollen Dopplungen bezueglich der Kombination aus Zulieferer/Zutat/Herkunft vermieden werden:
+
+CREATE OR REPLACE FUNCTION check_zutat_combination() RETURNS TRIGGER AS $$
+    BEGIN
+        IF (SELECT count(*) FROM zutat WHERE name = NEW.name AND herkunft = NEW.herkunft AND zulieferername = NEW.zulieferername)
+            THEN RETURN NULL;
+        END IF;
+        RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_new_zutat BEFORE INSERT ON zutat
+    FOR EACH ROW
+        EXECUTE PROCEDURE check_zutat_combination();
+
+
+-- Bei Erstellung einer neuen Zutat wird gleichzeitig ein Datensatz der Tabelle "vorrat" benoetigt:
+
+CREATE OR REPLACE FUNCTION new_vorrat() RETURNS TRIGGER AS $$
+    BEGIN
+        INSERT INTO vorrat VALUES(NEW.NUMMER);
+        RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_vorrat AFTER INSERT ON zutat
+    FOR EACH ROW
+        EXECUTE PROCEDURE new_vorrat();
+
+
+-- Pizzabaecker kann einen Zulieferer als verfuegbar / nicht verfuegbar markieren (keine Zutatenlieferungen mehr moeglich):
+
+CREATE OR REPLACE FUNCTION hide_zulieferer(zuliefererName TEXT) RETURNS VOID AS $$
+    BEGIN
+        UPDATE zulieferer SET status = False WHERE name = zuliefererName;
+    END;
+$$ LANGUAGE plpgsql;
+
+SELECT hide_zulieferer('Bowser'); -- Beispiel
+
+CREATE OR REPLACE FUNCTION show_zulieferer(zuliefererName TEXT) RETURNS VOID AS $$
+    BEGIN
+        UPDATE zulieferer SET status = True WHERE name = zuliefererName;
+    END;
+$$ LANGUAGE plpgsql;
+
+SELECT show_zulieferer('Bowser'); -- Beispiel
+
+
+-- Pizzabaecker kann eine Zutat für die Kunden als verfuegbar / nicht verfuegbar markieren:
+
+CREATE OR REPLACE FUNCTION hide_zutat(zutatName TEXT, zulieferer TEXT) RETURNS VOID AS $$
+    BEGIN
+        UPDATE zutat SET status = False WHERE name = zutatName AND zulieferername = zulieferer;
+    END;
+$$ LANGUAGE plpgsql;
+
+SELECT hide_zutat('Frucht', 'Toad'); -- Beispiel
+
+CREATE OR REPLACE FUNCTION show_zutat(zutatName TEXT, zulieferer TEXT) RETURNS VOID AS $$
+    BEGIN
+        UPDATE zutat SET status = True WHERE name = zutatName AND zulieferername = zulieferer;
+    END;
+$$ LANGUAGE plpgsql;
+
+SELECT show_zutat('Frucht', 'Toad'); -- Beispiel
+
+
+-- Pizzabaecker kann den Zutatenvorrat beliebig aufstocken:
+
+CREATE OR REPLACE FUNCTION order_zutat(bestellnummer INTEGER, bestellmenge INTEGER) RETURNS BOOLEAN AS $$
+    BEGIN
+        IF (SELECT status FROM zulieferer WHERE name = (SELECT zulieferername FROM zutat WHERE nummer = bestellnummer)) = True AND bestellmenge > 0
+            THEN UPDATE vorrat SET menge = menge + bestellmenge WHERE zutatnummer = bestellnummer;
+            RETURN TRUE;
+        END IF;
+        RETURN FALSE; -- Gewuenschte Bestellmenge <= 0 oder Zulieferer ist als nicht verfuegbar markiert
+    END;
+$$ LANGUAGE plpgsql;
+
+SELECT order_zutat(10, 99); -- Beispiel
+
+
+-- Bei einer Pizzabestellung werden die für die Pizza-Kreation notwendigen Zutaten im jeweils dazugehoerigen Vorrat um 100g verringert:
+
+CREATE OR REPLACE FUNCTION update_vorrat() RETURNS TRIGGER AS $$
+    DECLARE
+        zutatenliste cursor for SELECT zutat_ID FROM pizza_zutatnummer WHERE pizza_id = NEW.pizzanummer;
+        currentZutat INTEGER;
+    BEGIN
+        FOR currentZutat in zutatenliste LOOP
+            update vorrat set menge = menge - 100 WHERE vorrat.zutatnummer = currentZutat.zutat_ID;
+    END LOOP;
+    RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER need_zutaten AFTER INSERT ON bestellung
+    FOR EACH ROW
+        EXECUTE PROCEDURE update_vorrat();
+
+
+-- Bei Verbrauch (Pizzabestellung) oder Lieferung einer Zutat (Restocking) wird die Vorratsmenge ueberprueft und ggf. der Verfuegbarkeitsstatus für die Kundenansicht angepasst:
+
+CREATE OR REPLACE FUNCTION update_status() RETURNS TRIGGER AS $$
+    BEGIN
+        IF OLD.MENGE != NEW.MENGE
+            THEN IF NEW.MENGE >= 100 -- 100g ist die Mindestmenge für den Belag einer Pizza
+                THEN UPDATE zutat SET status = TRUE WHERE nummer = NEW.ZUTATNUMMER;
+                RETURN NEW;
+            END IF;
+            IF NEW.MENGE < 100
+                THEN UPDATE zutat SET status = FALSE WHERE nummer = NEW.ZUTATNUMMER;
+            RETURN NEW;
+            END IF;
+        RETURN NULL;
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_vorrat AFTER UPDATE ON vorrat
+    FOR EACH ROW
+        EXECUTE PROCEDURE update_status();
+
