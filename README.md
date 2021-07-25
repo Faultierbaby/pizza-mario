@@ -50,7 +50,7 @@ In der Datei 'pizzamario/settings.py' ist bei Projektstart bereits eine default-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 ```
