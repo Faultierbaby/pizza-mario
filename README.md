@@ -44,6 +44,7 @@ $ source pizzaenv/bin/activate
 
 ## Datenbank 
 
+### Variante 1: SQLite
 Standardmäßig enthält die Python-Installation eine Python-SQL-Bibliothek namens sqlite3, die zur Interaktion mit einer SQLite-Datenbank verwenden werden kann.
 In der Datei 'pizzamario/settings.py' ist bei Projektstart bereits eine default-Konfiguration zu einer SQLite-Datenbank hinterlegt, die von Django lokal angelegt wird:
 ```
@@ -54,7 +55,15 @@ DATABASES = {
     }
 }
 ```
-Optional kann mithilfe des Initialisierungsskripts eine identische Datenbank angelegt werden. Dementsprechend sollten dann auch die entsprechenden Felder (s.u.) in 'pizzamario/settings.py' angepasst werden:
+Um die SQLite-Datenbank mit Tabellen zu füllen, muss auf Grundlage der Django-Models in `pizzamario/bestellung/models.py` eine Migration ausgeführt werden:
+
+```
+(pizzaenv) ~$ python manage.py makemigrations bestellung
+(pizzaenv) ~$ python manage.py migrate bestellung
+```
+
+### Variante 2: PostgreSQL
+Idealerweise wird hier jedoch eine PostgreSQL-Datenbank gewählt, weil im vorliegenden Projektordner bereits ein Initialisierungskript mit Tabellen, Testdaten und Trigger vorliegt. Eine Migration der Django-Models ist dann nicht mehr notwendig. In 'pizzamario/settings.py' müssen nur noch die Authentifizierungs-Felder (`NAME, USER, PASSWORD, HOST, PORT`) der zuvor initialisierten Datenbank angepasst werden:
 ```
 DATABASES = {
     'default': {
