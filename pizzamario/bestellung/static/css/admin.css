@@ -1,0 +1,178 @@
+#header {
+    background: black;
+    color: white;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#branding h1{
+    color: black;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    background-color:#FFFFFF;
+    border: 8px outset; line-height: normal;
+}
+
+#user-tools {
+    float: right;
+    padding: 0;
+    margin: 0 0 0 20px;
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: right;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    margin: 0;
+    padding: 8px;
+    font-weight: 400;
+    font-size: 13px;
+    text-align: left;
+    background: black;
+    color: black;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.module caption, .inline-group h2 {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: 'Roboto Mono', monospace;
+
+}
+
+#content-related .actionlist li {
+    line-height: 1.2;
+    margin-bottom: 10px;
+    padding-left: 18px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#content-related h3 {
+    font-size: 14px;
+    color: black;
+    padding: 0 16px;
+    margin: 0 0 16px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.dashboard .module table th {
+    width: 100%;
+    font-family: 'Roboto Mono', monospace;
+}
+
+td, th {
+    font-size: 13px;
+    line-height: 16px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    padding: 8px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+body {
+    background: #eee;
+    background-image: url('/static/img/background.png'); 
+    background-repeat: no-repeat;
+    background-size: contain ;
+    background-position: top center;
+}
+
+div.breadcrumbs {
+    background: black;
+    padding: 10px 40px;
+    border: none;
+    font-size: 14px;
+    color: white;
+    text-align: left;
+    font-family: 'Roboto Mono', monospace;
+
+}
+
+#changelist-filter {
+    order: 1;
+    width: 240px;
+    background: #f8f8f8;
+    border-left: none;
+    margin: 0 0 0 30px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#content {
+    padding: 20px 40px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.delete-confirmation form input[type="submit"] {
+    background: #ba2121;
+    border-radius: 4px;
+    padding: 10px 15px;
+    color: #fff;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.delete-confirmation form .cancel-link {
+    display: inline-block;
+    vertical-align: middle;
+    height: 15px;
+    line-height: 15px;
+    background: #ddd;
+    border-radius: 4px;
+    padding: 10px 15px;
+    color: #333;
+    margin: 0 0 0 10px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#toolbar form input[type="submit"] {
+    border: 1px solid #ccc;
+    font-size: 13px;
+    padding: 4px 8px;
+    margin: 0;
+    vertical-align: middle;
+    background: #fff;
+    box-shadow: 0 -15px 20px -10px rgba(0, 0, 0, 0.15) inset;
+    cursor: pointer;
+    color: #333;
+    width: 20%;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#changelist .actions .button {
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 -15px 20px -10px rgba(0, 0, 0, 0.15) inset;
+    cursor: pointer;
+    height: 24px;
+    width: 20%;
+    line-height: 1;
+    padding: 2px 4px !important;
+    margin: 0;
+    color: #333;
+    font-family: 'Roboto Mono', monospace !important;
+
+}
+
+.login {
+    background-image: url( '/static/img/background.png' ) !important; 
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+.login .submit-row{
+    padding: 0px !important;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    color: black;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Roboto Mono', monospace !important;
+}
