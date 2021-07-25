@@ -1,0 +1,25 @@
+{% extends "base.html" %} 
+{% block content %}
+    <div >
+        <h1><span>Pizza-Bestellung</span></h1>
+    </div>
+
+    <div >
+        <h2><span>Was darf es heute sein?</span></h2>
+        <h3><span>Wähle eine deiner eigenen Pizza-Kreationen oder probier doch mal die Lieblinge anderer Kunden aus :)</span></h3>
+    </div>
+
+    <form method="POST" class="bestellung-form"> 
+        {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+        </table>
+        <button class="save btn btn-default"><a href="{% url 'index_kunde' %}">abbrechen</a></button>
+        <button type="submit" class="save btn btn-default">bestellen</button>
+    </form> 
+
+    <footer>
+        <button2><a href="{% url 'startseite' %}">Startseite</a></button2>
+   </footer>
+
+{% endblock %}

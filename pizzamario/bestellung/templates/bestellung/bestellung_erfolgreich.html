@@ -1,0 +1,20 @@
+{% extends "base.html" %} 
+{% block content %}
+    <div >
+        <h1><span>Pizza-Bestellung</span></h1>
+    </div>
+
+    <div >
+        <h2><span>Yeah!</span></h2>
+        <h3><span>Deine Bestellung wurde erfolgreich übermittelt! Mario wird sich jetzt um deine Pizza kümmern.</span></h3>
+        <button><a href="{% url 'bestellung' %}">Weitere Bestellung aufgeben</a></button>
+        <button><a href="{% url 'index_kunde' %}">zurück zur Übersicht</a></button>
+    </div>
+
+    
+
+    <footer>
+        <button2><a href="{% url 'startseite' %}">Startseite</a></button2>
+   </footer>
+
+{% endblock %}

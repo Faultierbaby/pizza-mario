@@ -1,0 +1,16 @@
+{% extends "base.html" %} 
+{% block content %}
+    <div >
+        <h1><span>Pizza-Bestellung</span></h1>
+    </div>
+
+    <div >
+        <h2><span>Wähle aus folgenden Optionen:</span></h2>
+        <button><a href="{% url 'zutatenliste' %}">Zutatenliste anschauen</a></button>
+        <button><a href="{% url 'kreation' %}">Pizza-Kreation erstellen</a></button>
+        <button><a href="{% url 'bestellung' %}">Bestellung aufgeben</a></button>
+    </div>
+    <footer>
+        <button2><a href="{% url 'startseite' %}">Startseite</a></button2>
+   </footer>
+{% endblock %}

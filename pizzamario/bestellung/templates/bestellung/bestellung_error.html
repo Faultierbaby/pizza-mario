@@ -1,0 +1,22 @@
+{% extends "base.html" %} 
+{% block content %}
+    <div >
+        <h1><span>Pizza-Bestellung</span></h1>
+    </div>
+
+    <div >
+        <h2><span>Oh nein!</span></h2>
+        <h3><span>Leider ist mindestens eine Zutat auf der von dir gewählten Pizza nicht mehr vorrätig. Bitte wähle eine andere Pizza-Kreation!</span></h3>
+        <button><a href="{% url 'bestellung' %}">Eine neue Bestellung aufgeben</a></button>
+        <h3><span>...oder erstell deine eigene Pizza-Kreation aus einer Auswahl von verfügbaren Zutaten:</span></h3>
+        <button><a href="{% url 'kreation' %}">Pizza-Kreation erstellen</a></button>
+        <button><a href="{% url 'index_kunde' %}">zurück zur Übersicht</a></button>
+    </div>
+
+    
+
+    <footer>
+        <button2><a href="{% url 'startseite' %}">Startseite</a></button2>
+   </footer>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %} 
+{% block content %}
+
+    <div >
+        <h2><span>Aktuelles Angebot</span></h2>
+        <h3><span>Es handelt sich herbei um täglich frische Zutaten aus aller Welt. Alle Zutaten sind frei miteinander kombinierbar:</span></h3>
+    </div>
+    
+      <table style="margin-left:auto;margin-right:auto;width: 1000;">
+        <tr>
+            <th>Name</th>
+            <th>Herkunft</th>
+            <th>Preis</th>
+        </tr>
+      
+    {% for zutat in zutaten %}
+        <tr>
+            <td style="background-color: white; text-align: center;"> {{ zutat.name }}</td>
+            <td style="background-color: white; text-align: center;"> {{ zutat.herkunft }}</td>
+            <td style="background-color: White; text-align: center;"> {{ zutat.preis }} Münzen</td>
+        </tr>  
+    {% endfor %}
+    </table>
+
+    <button><a href="{% url 'kreation' %}">Jetzt Pizza-Kreation erstellen!</a></button>
+    <button><a href="{% url 'index_kunde' %}">zurück</a></button>
+
+{% endblock %}
