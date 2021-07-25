@@ -106,8 +106,8 @@ Im Django-Admin können schließlich die Pizzen, Bestellungen, Zutaten und Zulie
 
 ## Bildquellen 
 
-projekt_pizzamario/pizzamario/bestellung/static/img/background.png: 
+pizzamario/pizzamario/bestellung/static/img/background.png: 
 https://images6.alphacoders.com/860/860645.png
 
-projekt_pizzamario/pizzamario/bestellung/static/img/logo.jpg: 
+pizzamario/pizzamario/bestellung/static/img/logo.jpg: 
 https://www.pinterest.es/pin/676102962797570346/
