@@ -63,7 +63,7 @@ Um die SQLite-Datenbank mit Tabellen zu füllen, muss auf Grundlage der Django-M
 ```
 
 ### Variante 2: PostgreSQL
-Idealerweise wird hier jedoch eine PostgreSQL-Datenbank gewählt, weil im vorliegenden Projektordner bereits ein Initialisierungskript mit Tabellen, Testdaten und Trigger vorliegt. Eine Migration der Django-Models ist dann nicht mehr notwendig. In 'pizzamario/settings.py' müssen nur noch die Authentifizierungs-Felder (`NAME, USER, PASSWORD, HOST, PORT`) der zuvor initialisierten Datenbank angepasst werden:
+Idealerweise wird hier jedoch eine PostgreSQL-Datenbank gewählt, weil im vorliegenden Projektordner bereits ein Initialisierungskript mit Tabellen, Testdaten und Trigger vorliegt. In 'pizzamario/settings.py' müssen zunächst die Authentifizierungs-Felder (`NAME, USER, PASSWORD, HOST, PORT`) der zuvor initialisierten Datenbank angepasst werden:
 ```
 DATABASES = {
     'default': {
@@ -76,6 +76,13 @@ DATABASES = {
     }
 }
 ```
+Mit den folgenden Kommandos werden die bereits existierenden Tabellen aus der Datenbank extrahiert, in der Konsole aufgelistet und schließlich als Modelklassen in der Datei `models.py` gespeichert:
+```
+$ python manage.py inspectdb
+$ python manage.py inspectdb > models.py
+```
+Eine Migration der Django-Models ist in dieser Variante nicht mehr notwendig.
+
 ## Pizza-Manager starten 
 
 1. In das Projektverzeichnis navigieren
